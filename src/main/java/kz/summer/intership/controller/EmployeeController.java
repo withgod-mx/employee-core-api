@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/employee")
@@ -33,5 +34,9 @@ public class EmployeeController {
         return "";
     }
 
+    @GetMapping("/{employeeId}")
+    public String getEmployeeById(@PathVariable String employeeId) {
+        return employeeId;
+    }
 
 }
