@@ -2,6 +2,8 @@ package kz.summer.intership.controller;
 
 
 import kz.summer.intership.model.EmployeeModelRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,15 @@ import javax.websocket.server.PathParam;
 @RequestMapping("/employee")
 public class EmployeeController {
 
+    @Autowired
+    Environment env;
+
     @GetMapping("/healthcheck")
     public String healthCheck() {
-        return "It's  Work";
+
+
+
+        return "It's  Working port: " + env.getProperty("local.server.port");
     }
 
     @PostMapping
@@ -40,3 +48,4 @@ public class EmployeeController {
     }
 
 }
+ 
