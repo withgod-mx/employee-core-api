@@ -21,8 +21,6 @@ public class EmployeeController {
     @GetMapping("/healthcheck")
     public String healthCheck() {
 
-
-
         return "It's  Working port: " + env.getProperty("local.server.port");
     }
 
