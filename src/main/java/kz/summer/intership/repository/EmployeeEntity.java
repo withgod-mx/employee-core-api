@@ -25,6 +25,16 @@ public class EmployeeEntity {
     @Column(nullable = false, length = 50)
     private String department;
 
+    private String companyId;
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
     public String getSurname() {
         return surname;
     }
