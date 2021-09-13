@@ -1,7 +1,12 @@
 package kz.summer.intership.controller;
 
 
+import kz.summer.intership.model.EmployeeDTO;
 import kz.summer.intership.model.EmployeeModelRequest;
+import kz.summer.intership.model.EmployeeResponse;
+import kz.summer.intership.service.EmployeeService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -10,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/employee")
@@ -18,6 +25,9 @@ public class EmployeeController {
     @Autowired
     Environment env;
 
+    @Autowired
+    EmployeeService employeeService;
+
     @GetMapping("/healthcheck")
     public String healthCheck() {
 
@@ -25,14 +35,31 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeModelRequest> createEmployee(@Valid @RequestBody EmployeeModelRequest employeeDetail) {
+    public ResponseEntity<EmployeeResponse> createEmployee(@Valid @RequestBody EmployeeModelRequest employeeDetail) {
 
-        return new ResponseEntity<EmployeeModelRequest>(employeeDetail, HttpStatus.OK);
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        EmployeeDTO employeeDTO = modelMapper.map(employeeDetail, EmployeeDTO.class);
+        employeeDTO.setEmployeeId(UUID.randomUUID().toString());
+
+        EmployeeResponse employeeResponse = employeeService.createAndUpdateEmployee(employeeDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(employeeResponse);
     }
 
-    @PutMapping
-    public String updateEmployee(@Valid @RequestBody EmployeeModelRequest employeeDetail) {
-        return  null;
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<EmployeeResponse> updateEmployee(@Valid @RequestBody EmployeeModelRequest employeeDetail,
+                                                           @PathVariable String employeeId) {
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        EmployeeDTO employeeDTO = modelMapper.map(employeeDetail, EmployeeDTO.class);
+        employeeDTO.setEmployeeId(employeeId);
+
+        EmployeeResponse employeeResponse = employeeService.createAndUpdateEmployee(employeeDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(employeeResponse);
+
     }
 
     @GetMapping("/all")
@@ -46,4 +73,12 @@ public class EmployeeController {
     }
 
 }
+
+
+/**
+ * RequestModel
+ * DTO
+ * Entity
+ * Response
+ */
  
